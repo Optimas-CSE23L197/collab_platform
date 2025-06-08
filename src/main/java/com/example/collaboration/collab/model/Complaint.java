@@ -3,7 +3,7 @@ package com.example.collaboration.collab.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "complaints")
@@ -31,10 +31,10 @@ public class Complaint {
     private String complaintStatus;
 
     @Column(name = "complaintDateAt")
-    private LocalDate complaintDateAt;
+    private String complaintDateAt;
 
     @Column(name = "complaintResolveAt")
-    private LocalDate complaintResolveAt;
+    private String complaintResolveAt;
 
     @Column(name = "employeeName", length = 100)
     private String employeeName;
