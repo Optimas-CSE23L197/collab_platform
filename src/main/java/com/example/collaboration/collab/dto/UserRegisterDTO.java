@@ -10,8 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserResponseDTO {
-
+public class UserRegisterDTO {
     private String userId;
 
     @NotBlank(message = "User ID cannot be blank")
@@ -21,6 +20,10 @@ public class UserResponseDTO {
     @Email(message = "Invalid email format")
     @Size(max = 50, message = "Email cannot exceed 50 characters")
     private String userEmail;
+
+    @NotBlank(message = "User password cannot be blank")
+    @Size(min = 6, max = 20, message = "Password must be between 8 and 20 characters")
+    private String userPassword;
 
     @NotBlank(message = "User phone cannot be blank")
     @Size(max = 15, message = "Phone number cannot exceed 15 characters")

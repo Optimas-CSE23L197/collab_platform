@@ -7,9 +7,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ApiResponse {
-    private int response_Status;
-    private String response_Message;
+public class ApiResponseDTO {
+    private int response_status;
     private String response_token;
+    private String response_message;
     private Object response_data;
 }
