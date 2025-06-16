@@ -6,19 +6,19 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.example.collaboration.collab.model.User;
+import com.example.collaboration.collab.model.Employee;
 
-public class CustomUserDetails extends UnifiedCustomAuth {
+public class CustomEmployeeDetails extends UnifiedCustomAuth {
 
     private final String role;
 
-    public CustomUserDetails(User user) {
-        super(user.getUserEmail(), user.getUserPassword());
-        this.role = user.getUserRole().toString();
+    public CustomEmployeeDetails(Employee employee) {
+        super(employee.getEmployeeId(), employee.getEmployeePassword());
+        this.role = employee.getEmployeeRole().toString();
     }
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
+
 }

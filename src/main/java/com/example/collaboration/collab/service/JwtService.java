@@ -1,11 +1,9 @@
 package com.example.collaboration.collab.service;
 
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
 
 import javax.crypto.SecretKey;
 
@@ -24,17 +22,18 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret_key;
 
-    public String generateToken(String userEmail) {
+    public String generateToken(String userName, Map<String, Object> claims, long durationInMillis) {
 
-        Map<String, Object> claims = new HashMap<>();
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + durationInMillis);
 
         return Jwts
                 .builder()
                 .claims()
                 .add(claims)
-                .subject(userEmail)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1 * 60 * 60 * 1000))
+                .subject(userName)
+                .issuedAt(now)
+                .expiration(expiry)
                 .and()
                 .signWith(getKey())
                 .compact();

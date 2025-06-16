@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.collaboration.collab.config.CustomUserDetails;
 import com.example.collaboration.collab.dto.UpdateResponseDTO;
 import com.example.collaboration.collab.dto.UserRegisterDTO;
 import com.example.collaboration.collab.dto.UserResponseDTO;
@@ -19,27 +16,13 @@ import com.example.collaboration.collab.model.User;
 import com.example.collaboration.collab.repository.UserRepository;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    // for spring security
-    // load user details for authentication
-    // leter we user jwt token for authentication then we can remove this method
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String userEmail = username;
-        User user = userRepository.findByUserEmail(userEmail);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with username: " + userEmail);
-        }
-        return new CustomUserDetails(user);
-    }
 
     // generate user id
     public String generateUserId(UserRegisterDTO userRegisterDTO) {
@@ -79,8 +62,6 @@ public class UserService implements UserDetailsService {
     // register a new user
     public void registerUser(UserRegisterDTO userRegisterDTO) {
 
-        System.out.println("User Password: " + userRegisterDTO.getUserPassword());
-
         User user = userRepository.findByUserEmail(userRegisterDTO.getUserEmail());
 
         String rawPassword = userRegisterDTO.getUserPassword();
@@ -99,8 +80,7 @@ public class UserService implements UserDetailsService {
         user.setUserEmail(userRegisterDTO.getUserEmail());
         user.setUserPhone(userRegisterDTO.getUserPhone());
         user.setUserPassword(passwordEncoder.encode(userRegisterDTO.getUserPassword()));
-        System.out.println("User Password: " + userRegisterDTO.getUserPassword());
-        user.setUserRole(userRegisterDTO.getUserRole());
+        user.setUserRole("user");
         user.setUserAddress(userRegisterDTO.getUserAddress());
         userRepository.save(user);
     }

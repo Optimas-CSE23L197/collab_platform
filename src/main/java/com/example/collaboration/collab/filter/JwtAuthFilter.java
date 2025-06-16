@@ -15,8 +15,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import com.example.collaboration.collab.service.AuthService;
 import com.example.collaboration.collab.service.JwtService;
-import com.example.collaboration.collab.service.UserService;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -51,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = applicationContext.getBean(UserService.class).loadUserByUsername(userName);
+            UserDetails userDetails = applicationContext.getBean(AuthService.class).loadUserByUsername(userName);
 
             // if the user is not authenticated, set the authentication in the security
             // context
