@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.collaboration.collab.dto.EmployeeApprovedDTO;
 import com.example.collaboration.collab.dto.EmployeeRegisterRequestDTO;
-import com.example.collaboration.collab.model.Department;
 import com.example.collaboration.collab.model.Employee;
 import com.example.collaboration.collab.model.Request;
 import com.example.collaboration.collab.model.Employee.EmployeeRole;
@@ -83,49 +82,36 @@ public class EmployeeService {
     // register a new employee
     public void registerEmployee(EmployeeRegisterRequestDTO employeeRegisterRequestDTO) throws JsonProcessingException {
         // validate employee authentication
-        // String empId = validateEmployeeAuthentication();
+        String empId = validateEmployeeAuthentication();
 
-        // Employee employee = getEmployeeById(empId);
+        Employee employee = getEmployeeById(empId);
 
-        // if (employee == null) {
-        // throw new RuntimeException("Employee not found with id: " + empId);
-        // }
+        if (employee == null) {
+            throw new RuntimeException("Employee not found with id: " + empId);
+        }
 
-        // if (employee.getEmployeeRole() != EmployeeRole.CLERK) {
-        // throw new RuntimeException("Only clerk can register a new employee");
-        // }
+        if (employee.getEmployeeRole() != EmployeeRole.CLERK) {
+            throw new RuntimeException("Only clerk can register a new employee");
+        }
 
-        // Request request = new Request();
-        // try {
-        // request.setRequestId(requestService.generateRequestId());
-        // } catch (Exception e) {
-        // throw new RuntimeException("Error generating request ID: " + e.getMessage());
-        // }
+        Request request = new Request();
+        try {
+            request.setRequestId(requestService.generateRequestId());
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating request ID: " + e.getMessage());
+        }
 
-        // request.setRequestType(employeeRegisterRequestDTO.getRequestType());
-        // ObjectMapper mapper = new ObjectMapper();
-        // String jsonData = mapper.writeValueAsString(employeeRegisterRequestDTO);
-        // request.setRequestData(jsonData);
-        // request.setRequestStatus(Request.RequestStatus.Pending);
-        // request.setRequestBy(employee.getEmployeeId());
-        // request.setApprovedBy(employeeRegisterRequestDTO.getApproverId());
-        // request.setDepartmentId(employee.getDepartment().getDeptId());
-        // request.setRequestDate(LocalDate.now());
-        // request.setApprovalDate(null);
-        // requestRepository.save(request);
-
-        Department department = new Department();
-        department.setDeptId(employeeRegisterRequestDTO.getDepartmentId());
-
-        Employee newEmployee = new Employee();
-        newEmployee.setEmployeeId(generateEmployeeId());
-        newEmployee.setEmployeeName(employeeRegisterRequestDTO.getEmployeeName());
-        newEmployee.setEmployeeEmail(employeeRegisterRequestDTO.getEmployeeEmail());
-        newEmployee.setEmployeePhone(employeeRegisterRequestDTO.getEmployeePhone());
-        newEmployee.setEmployeePassword(passwordEncoder.encode(employeeRegisterRequestDTO.getEmployeePassword()));
-        newEmployee.setEmployeeRole(EmployeeRole.valueOf(employeeRegisterRequestDTO.getEmployeeRole().toUpperCase()));
-        newEmployee.setDepartment(department);
-        employeeRepository.save(newEmployee);
+        request.setRequestType(employeeRegisterRequestDTO.getRequestType());
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonData = mapper.writeValueAsString(employeeRegisterRequestDTO);
+        request.setRequestData(jsonData);
+        request.setRequestStatus(Request.RequestStatus.Pending);
+        request.setRequestBy(employee.getEmployeeId());
+        request.setApprovedBy(employeeRegisterRequestDTO.getApproverId());
+        request.setDepartmentId(employee.getDepartment().getDeptId());
+        request.setRequestDate(LocalDate.now());
+        request.setApprovalDate(null);
+        requestRepository.save(request);
 
     }
 
@@ -170,68 +156,65 @@ public class EmployeeService {
 
     // higher authroty approval for employee registration
     // only for department head
-    // @Transactional
-    // public void approveEmployeeRegistration(String requestId, EmployeeApprovedDTO
-    // employeeApprovedRequestDTO)
-    // throws JsonMappingException, JsonProcessingException {
-    // String employeeId = validateEmployeeAuthentication();
+    @Transactional
+    public void approveEmployeeRegistration(String requestId, EmployeeApprovedDTO employeeApprovedRequestDTO)
+            throws JsonMappingException, JsonProcessingException {
+        String employeeId = validateEmployeeAuthentication();
 
-    // Employee employee = getEmployeeById(employeeId);
+        Employee employee = getEmployeeById(employeeId);
 
-    // if (employee == null) {
-    // throw new RuntimeException("Employee not found with id: " + employeeId);
-    // }
+        if (employee == null) {
+            throw new RuntimeException("Employee not found with id: " + employeeId);
+        }
 
-    // if (employee.getEmployeeRole() != EmployeeRole.HOD) {
-    // throw new RuntimeException("Only HOD can approve employee registration");
-    // }
+        if (employee.getEmployeeRole() != EmployeeRole.HOD) {
+            throw new RuntimeException("Only HOD can approve employee registration");
+        }
 
-    // Optional<Request> requestOptional =
-    // requestRepository.findByRequestId(requestId);
-    // if (requestOptional.isEmpty()) {
-    // throw new RuntimeException("Request not found with id: " + requestId);
-    // }
+        Optional<Request> requestOptional = requestRepository.findByRequestId(requestId);
+        if (requestOptional.isEmpty()) {
+            throw new RuntimeException("Request not found with id: " + requestId);
+        }
 
-    // Request request = requestOptional.get();
+        Request request = requestOptional.get();
 
-    // if (request.getRequestStatus() != Request.RequestStatus.Pending) {
-    // throw new RuntimeException("Request is not in pending state");
-    // }
+        if (request.getRequestStatus() != Request.RequestStatus.Pending) {
+            throw new RuntimeException("Request is not in pending state");
+        }
 
-    // String status = employeeApprovedRequestDTO.getRequestStatus();
+        String status = employeeApprovedRequestDTO.getRequestStatus();
 
-    // if ("accepted".equalsIgnoreCase(status)) {
-    // request.setRequestStatus(Request.RequestStatus.Approved);
-    // } else if ("rejected".equalsIgnoreCase(status)) {
-    // request.setRequestStatus(Request.RequestStatus.Rejected);
-    // } else {
-    // throw new RuntimeException("Invalid request status: " + status);
-    // }
+        if ("accepted".equalsIgnoreCase(status)) {
+            request.setRequestStatus(Request.RequestStatus.Approved);
+        } else if ("rejected".equalsIgnoreCase(status)) {
+            request.setRequestStatus(Request.RequestStatus.Rejected);
+        } else {
+            throw new RuntimeException("Invalid request status: " + status);
+        }
 
-    // request.setApprovedBy(employeeId);
-    // request.setApprovalDate(LocalDate.now());
+        request.setApprovedBy(employeeId);
+        request.setApprovalDate(LocalDate.now());
 
-    // requestRepository.save(request);
+        requestRepository.save(request);
 
-    // ObjectMapper mapper = new ObjectMapper();
-    // EmployeeRegisterRequestDTO employeeRegisterRequestDTO =
-    // mapper.readValue(request.getRequestData(),
-    // EmployeeRegisterRequestDTO.class);
+        ObjectMapper mapper = new ObjectMapper();
+        EmployeeRegisterRequestDTO employeeRegisterRequestDTO = mapper.readValue(request.getRequestData(),
+                EmployeeRegisterRequestDTO.class);
 
-    // Employee newEmployee = new Employee();
-    // newEmployee.setEmployeeId(generateEmployeeId());
-    // newEmployee.setEmployeeName(employeeRegisterRequestDTO.getEmployeeName());
-    // newEmployee.setEmployeeEmail(employeeRegisterRequestDTO.getEmployeeEmail());
-    // newEmployee.setEmployeePhone(employeeRegisterRequestDTO.getEmployeePhone());
-    // newEmployee.setEmployeePassword(passwordEncoder.encode(employeeRegisterRequestDTO.getEmployeePassword()));
-    // newEmployee.setEmployeeRole(EmployeeRole.valueOf(employeeRegisterRequestDTO.getEmployeeRole().toUpperCase()));
-    // newEmployee.setDepartment(employee.getDepartment());
+        Employee newEmployee = new Employee();
+        newEmployee.setEmployeeId(generateEmployeeId());
+        newEmployee.setEmployeeName(employeeRegisterRequestDTO.getEmployeeName());
+        newEmployee.setEmployeeEmail(employeeRegisterRequestDTO.getEmployeeEmail());
+        newEmployee.setEmployeePhone(employeeRegisterRequestDTO.getEmployeePhone());
+        newEmployee.setEmployeePassword(passwordEncoder.encode(employeeRegisterRequestDTO.getEmployeePassword()));
+        newEmployee.setEmployeeRole(EmployeeRole.valueOf(employeeRegisterRequestDTO.getEmployeeRole().toUpperCase()));
+        newEmployee.setDepartment(employee.getDepartment());
 
-    // if (request.getRequestStatus() != RequestStatus.Approved) {
-    // throw new RuntimeException("Request is not approved");
-    // }
+        if (request.getRequestStatus() != RequestStatus.Approved) {
+            throw new RuntimeException("Request is not approved");
+        }
 
-    // employeeRepository.save(newEmployee);
-    // }
+        employeeRepository.save(newEmployee);
+    }
 
 }
