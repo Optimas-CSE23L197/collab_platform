@@ -1,5 +1,6 @@
 package com.example.collaboration.collab.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -7,8 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,10 +43,10 @@ public class Request {
     private String departmentId;
 
     @Column(name = "request_date", nullable = false)
-    private LocalDateTime requestDate;
+    private LocalDate requestDate;
 
     @Column(name = "approval_date")
-    private LocalDateTime approvalDate;
+    private LocalDate approvalDate;
 
     public enum RequestType {
         Register_Employee,

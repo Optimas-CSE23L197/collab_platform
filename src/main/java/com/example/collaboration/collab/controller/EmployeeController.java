@@ -39,7 +39,7 @@ public class EmployeeController {
     }
 
     // register a new employee
-    @PreAuthorize("hasRole('ROLE_CLERK')")
+    // @PreAuthorize("hasRole('ROLE_CLERK')")
     @PostMapping("/register")
     public ResponseEntity<ApiResponseDTO> registerEmployee(
             @RequestBody EmployeeRegisterRequestDTO employeeRegisterRequestDTO) {
@@ -68,20 +68,25 @@ public class EmployeeController {
     }
 
     // approve employee registration by hod
-    @PreAuthorize("hasRole('ROLE_HOD')")
-    @PatchMapping("/approve/{requestId}")
-    public ResponseEntity<ApiResponseDTO> approveEmployeeRegistration(@PathVariable String requestId,
-            @RequestBody EmployeeApprovedDTO employeeApprovedRequestDTO)
-            throws JsonMappingException, JsonProcessingException {
-        try {
-            employeeService.approveEmployeeRegistration(requestId, employeeApprovedRequestDTO);
-        } catch (JsonProcessingException e) {
-            ApiResponseDTO errorResponse = new ApiResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), null,
-                    "Failed to process request data", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
-        ApiResponseDTO response = new ApiResponseDTO(HttpStatus.OK.value(), null, "Employee registration approved",
-                null);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    // @PreAuthorize("hasRole('ROLE_HOD')")
+    // @PatchMapping("/approve/{requestId}")
+    // public ResponseEntity<ApiResponseDTO>
+    // approveEmployeeRegistration(@PathVariable String requestId,
+    // @RequestBody EmployeeApprovedDTO employeeApprovedRequestDTO)
+    // throws JsonMappingException, JsonProcessingException {
+    // try {
+    // employeeService.approveEmployeeRegistration(requestId,
+    // employeeApprovedRequestDTO);
+    // } catch (JsonProcessingException e) {
+    // ApiResponseDTO errorResponse = new
+    // ApiResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), null,
+    // "Failed to process request data", null);
+    // return
+    // ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    // }
+    // ApiResponseDTO response = new ApiResponseDTO(HttpStatus.OK.value(), null,
+    // "Employee registration approved",
+    // null);
+    // return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
 }

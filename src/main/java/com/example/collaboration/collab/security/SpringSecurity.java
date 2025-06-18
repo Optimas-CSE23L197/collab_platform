@@ -39,7 +39,9 @@ public class SpringSecurity {
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(requests -> requests
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/employee/**").hasAnyRole("HOD", "CLERK", "EMPLOYEE", "ADMIN")
+                        // .requestMatchers("/employee/**").hasAnyRole("HOD", "CLERK", "EMPLOYEE",
+                        // "ADMIN")
+                        .requestMatchers("/employee/register").permitAll()
                         .requestMatchers("/department/**").hasAnyRole("HOD", "CLERK", "EMPLOYEE", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
