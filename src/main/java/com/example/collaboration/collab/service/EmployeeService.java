@@ -61,8 +61,21 @@ public class EmployeeService {
         return namePart + String.format("%04d", random.nextInt(10000));
     }
 
+    // ftech employee by employee id
+    public Employee fetchEmployeeById() {
+        String employeeId = validateEmployeeAuthentication();
+
+        Employee employee = employeeRepository.findByEmployeeId(employeeId);
+        if (employee == null) {
+            throw new RuntimeException("Employee not found with id: " + employeeId);
+        }
+
+        return employee;
+    }
+
     // check employee existance by employee id
     public Employee getEmployeeById(String employeeId) {
+        // validate and fetch employee id
         employeeId = validateEmployeeAuthentication();
 
         Employee employee = employeeRepository.findByEmployeeId(employeeId);

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RestController
 @RequestMapping("/employee")
-// @PreAuthorize("hasAnyRole('ROLE_HOD', 'ROLE_CLERK', 'ROLE_EMPLOYEE')")
+@PreAuthorize("hasAnyRole('ROLE_HOD', 'ROLE_CLERK', 'ROLE_EMPLOYEE')")
 public class EmployeeController {
 
     @Autowired
@@ -83,6 +83,16 @@ public class EmployeeController {
         ApiResponseDTO response = new ApiResponseDTO(HttpStatus.OK.value(), null,
                 "Employee registration approved",
                 null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // get employee by id
+    @GetMapping("/profile")
+    @PreAuthorize("hasAnyRole('ROLE_HOD', 'ROLE_CLERK', 'ROLE_EMPLOYEE')")
+    public ResponseEntity<ApiResponseDTO> getEmployeeById() {
+        var employee = employeeService.fetchEmployeeById();
+        ApiResponseDTO response = new ApiResponseDTO(HttpStatus.OK.value(), null, "Employee fetched successfully",
+                employee);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
