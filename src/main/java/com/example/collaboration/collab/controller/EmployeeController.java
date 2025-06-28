@@ -56,6 +56,9 @@ public class EmployeeController {
     }
 
     // get employee for register by hod
+    // we going to use this api for every request table value
+    // also we should use department id insted of request id. we use request id just
+    // for approve or reject the requets
     @PreAuthorize("hasRole('ROLE_HOD')")
     @GetMapping("/request/{requestId}")
     public ResponseEntity<ApiResponseDTO> getEmployeeForRegister(@PathVariable String requestId)
@@ -95,4 +98,23 @@ public class EmployeeController {
                 employee);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    // register project
+    // @PreAuthorize("hasRole('CLERK')")
+    // @PostMapping("/register-project")
+    // public ResponseEntity<ApiResponseDTO> registerNewProject() {
+    // var project = projectService.registerProject();
+    // ApiResponseDTO response = new ApiResponseDTO(HttpStatus.OK.value(), null,
+    // "Request Send to higher authority",
+    // project);
+    // return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
+
+    // approve project
+    @PreAuthorize("hasRole('HOD')")
+    @PatchMapping("/approve-project/{requestId}")
+    public ResponseEntity<ApiResponseDTO> approveProject() {
+        return null;
+    }
+
 }

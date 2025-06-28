@@ -1,11 +1,14 @@
 package com.example.collaboration.collab.model;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,4 +50,7 @@ public class Employee {
         CLERK,
         EMPLOYEE
     }
+
+    @ManyToMany(mappedBy = "employees")
+    private Set<Collaboration> collaborations;
 }
