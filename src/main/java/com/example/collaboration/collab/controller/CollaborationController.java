@@ -33,6 +33,14 @@ public class CollaborationController {
     }
 
     // department which member are joining room
+    @PreAuthorize("hasAnyRole('HOD','CLERK','EMPLOYEE')")
+    @PostMapping("/join-room-by-department")
+    public ResponseEntity<ApiResponseDTO> joinRoomByDepartment() {
+        collaborationService.joinDepartment(null);
+        ApiResponseDTO response = new ApiResponseDTO(HttpStatus.OK.value(), null, "Room Join successful",
+                null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     // employee join room
     @PreAuthorize("hasAnyRole('HOD','CLERK','EMPLOYEE')")
